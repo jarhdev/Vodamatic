@@ -140,7 +140,7 @@ export function datosDemo(rubro: Rubro = "cafeteria", dias = 14) {
         });
         if (l.p.controlaStock === "sí") {
           movimientos.push({
-            id: `M-${id}-${l.p.id}`, fecha, hora: "12:00", productoId: l.p.id, producto: l.p.nombre, tipo: "salida",
+            id: `M-${id.slice(7)}-${detalleVentas.length}`, fecha, hora: ventas[ventas.length - 1].hora, productoId: l.p.id, producto: l.p.nombre, tipo: "salida",
             cantidad: -l.c, costoUnitUsd: l.p.costoUsd, origen: "venta", referencia: id, nota: "", registradoPor: "Demo", anulado: "",
           });
         }
