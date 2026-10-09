@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { claseBotonSec } from "./ui";
 import { comprimirImagen } from "./cliente";
+import { Icono } from "./Icono";
 
 interface Props<T> {
   tipo: "factura" | "pago";
@@ -40,7 +41,7 @@ export function LectorArchivo<T>({ tipo, texto, onLeido }: Props<T>) {
     <div>
       <input ref={input} type="file" accept="image/*,application/pdf" className="hidden" onChange={alElegir} />
       <button type="button" className={`${claseBotonSec} w-full`} disabled={estado === "leyendo"} onClick={() => input.current?.click()}>
-        <span aria-hidden>📷</span> {estado === "leyendo" ? "Leyendo…" : texto}
+        <Icono nombre="camara" className="h-4 w-4 text-turquesa" /> {estado === "leyendo" ? "Leyendo…" : texto}
       </button>
       {estado && estado !== "leyendo" && <p className="mt-1 text-xs text-peligro">{estado}</p>}
     </div>

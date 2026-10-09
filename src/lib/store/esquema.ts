@@ -119,6 +119,19 @@ export interface Usuario {
   intentosFallidos: number;
   bloqueadoHasta: string;
   creado: string;
+  telegramId: string;
+}
+
+/** Registros que llegan por Telegram y esperan confirmación (✅) antes de guardarse. */
+export interface Pendiente {
+  id: string;
+  tipo: string; // "?" | "venta" | "gasto"
+  estado: string; // "esperando" | "leido" | "confirmado" | "descartado"
+  creado: string;
+  chatId: string;
+  usuario: string;
+  archivo: string; // file_id de Telegram + mime, como JSON
+  datos: string; // JSON con lo leído por la IA
 }
 
 export interface Filas {
@@ -130,6 +143,7 @@ export interface Filas {
   movimientos: Movimiento;
   tasas: Tasa;
   usuarios: Usuario;
+  pendientes: Pendiente;
 }
 
 export type Tabla = keyof Filas;
@@ -191,13 +205,18 @@ export const TABLAS: { [K in Tabla]: DefTabla<Filas[K]> } = {
   },
   usuarios: {
     pestaña: "Usuarios",
-    columnas: { id: "ID", nombre: "Nombre", rol: "Rol", pinHash: "PIN hash", pinSal: "PIN sal", estado: "Estado", intentosFallidos: "Intentos fallidos", bloqueadoHasta: "Bloqueado hasta", creado: "Creado" },
+    columnas: { id: "ID", nombre: "Nombre", rol: "Rol", pinHash: "PIN hash", pinSal: "PIN sal", estado: "Estado", intentosFallidos: "Intentos fallidos", bloqueadoHasta: "Bloqueado hasta", creado: "Creado", telegramId: "Telegram ID" },
     numericas: ["intentosFallidos"],
+  },
+  pendientes: {
+    pestaña: "Pendientes",
+    columnas: { id: "ID", tipo: "Tipo", estado: "Estado", creado: "Creado", chatId: "Chat ID", usuario: "Usuario", archivo: "Archivo", datos: "Datos" },
+    numericas: [],
   },
 };
 
-/** Pestañas que la app recalcula completas después de cada registro (el dueño solo las lee). */
-export const PESTAÑAS_CALCULADAS = { stock: "Stock", resumen: "Resumen" } as const;
+/** Pestañas hechas solo de fórmulas sobre las demás (las crea scripts/setup-sheet.ts). */
+export const PESTAÑAS_CALCULADAS = { resumen: "Resumen", stock: "Stock" } as const;
 
 export type Celda = string | number;
 
@@ -206,6 +225,4 @@ export interface Store {
   agregar<T extends Tabla>(tabla: T, filas: Filas[T][]): Promise<void>;
   /** Aplica `cambios` a cada fila que cumpla `donde`. Devuelve cuántas cambió. */
   actualizar<T extends Tabla>(tabla: T, donde: (f: Filas[T]) => boolean, cambios: Partial<Filas[T]>): Promise<number>;
-  /** Reescribe una pestaña calculada completa (encabezados + filas). */
-  escribirPestaña(pestaña: string, filas: Celda[][]): Promise<void>;
 }

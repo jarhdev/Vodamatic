@@ -19,7 +19,7 @@ export default async function Inventario() {
     <div className="space-y-4">
       <Titulo sub="Las ventas descuentan y las facturas de compra suman automáticamente.">Inventario</Titulo>
 
-      <Tarjeta titulo="Stock actual" accion={<span className="text-xs text-tinta-2">Valor: <span className="num font-medium text-tinta">{formatoUsd(valor)}</span></span>}>
+      <Tarjeta titulo="Stock actual" icono="inventario" accion={<span className="text-xs text-tinta-2">Valor: <span className="num font-medium text-tinta">{formatoUsd(valor)}</span></span>}>
         {stock.length === 0 ? <Vacio>Ningún producto controla inventario. Actívalo en Productos.</Vacio> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -46,12 +46,12 @@ export default async function Inventario() {
       </Tarjeta>
 
       {sesion.rol === "admin" && (
-        <Tarjeta titulo="Registrar movimiento">
+        <Tarjeta titulo="Registrar movimiento" icono="mas">
           <MovimientoInventario productos={productos.filter((p) => p.activo !== "no")} />
         </Tarjeta>
       )}
 
-      <Tarjeta titulo="Últimos movimientos">
+      <Tarjeta titulo="Últimos movimientos" icono="tasa">
         {recientes.length === 0 ? <Vacio>Sin movimientos</Vacio> : (
           <ul className="divide-y divide-borde text-sm">
             {recientes.map((m) => (

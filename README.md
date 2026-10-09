@@ -9,7 +9,8 @@ Se basa en la lógica de **Bombi**, pero está pensada para instalarse en muchos
 - **Inventario automático**: cada venta descuenta, cada factura de compra suma, con conteo físico, mínimos y alertas.
 - **Por cobrar** (fiado): se cobra después con la tasa del día del pago.
 - **Tasa BCV automática** (USD y EUR, vía dolarapi), con carga manual. Cada negocio elige si convierte con la tasa del dólar o del euro.
-- **Google Sheets como base de datos**: cada negocio tiene su hoja; las pestañas `Stock` y `Resumen` se recalculan solas en cada registro.
+- **Google Sheets como base de datos**: cada negocio tiene su hoja; las pestañas `Stock` y `Resumen` son fórmulas que se recalculan solas.
+- **Bot de Telegram** (gratis): fotos de capturas y facturas que se registran con ✅, `/resumen`, `/stock`, `/cobrar`, `/tasa`, cierre del día a las 9 pm y aviso de stock bajo.
 - **Resumen**: ventas, gastos y ganancia de hoy, la semana y el mes; gráfico de 14 días; más vendidos; gastos por categoría.
 - Usuarios con **PIN** (bloqueo tras 5 intentos), roles admin / usuario, anulaciones auditables (no se borra nada).
 - **API** para n8n o bots (`X-Api-Key`), PWA instalable en el teléfono, modo claro y oscuro.
@@ -56,10 +57,21 @@ servicio como *Colaborador* y pon su ID en `GOOGLE_DRIVE_FOLDER_ID` (las cuentas
 | Gastos / Detalle gastos | Cada gasto y los renglones de la factura | No |
 | Inventario | Movimientos: entradas, salidas, ajustes | No |
 | Tasas | Tasa BCV USD/EUR por día | Se puede agregar una manual |
-| Usuarios | Nombre, rol, PIN cifrado | Solo estado / rol |
-| Stock, Resumen | Calculadas por la app | No |
+| Usuarios | Nombre, rol, PIN cifrado, Telegram vinculado | Solo estado / rol |
+| Pendientes | Fotos recibidas por Telegram esperando ✅ | No |
+| Stock, Resumen | Fórmulas sobre las demás pestañas | No |
 
 La app lee por **nombre de encabezado**, así que el dueño puede reordenar columnas o agregar columnas propias sin romper nada.
+
+## Bot de Telegram
+
+1. En Telegram abre **@BotFather**, envía `/newbot` y copia el token.
+2. En Netlify agrega `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET` (clave al azar: letras, números, `_` o `-`) y `API_KEY`.
+3. Publica de nuevo, entra a **Ajustes** (engranaje) y toca **Conectar bot**.
+4. Cada persona del equipo le escribe al bot `/vincular SuNombre SuPIN`.
+
+Las fotos quedan en la pestaña `Pendientes` hasta que la persona confirma con ✅, igual que en Bombi. El cierre del día
+lo envía la función programada `netlify/functions/reporte-diario.mts` (9:00 pm hora de Venezuela).
 
 ## Plantillas por rubro
 

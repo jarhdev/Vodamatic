@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getStore } from "./store";
+import { getStore, type Usuario } from "./store";
 import { pinValido } from "./pin";
 
 export interface Sesion {
@@ -78,7 +78,8 @@ export async function sesionApi(soloAdmin = false): Promise<Sesion> {
   return s;
 }
 
-export async function iniciarSesion(nombre: string, pin: string): Promise<Sesion> {
+/** Valida nombre + PIN con bloqueo tras varios intentos. Lo usan el login web y /vincular de Telegram. */
+export async function verificarCredenciales(nombre: string, pin: string): Promise<Usuario> {
   const store = getStore();
   const usuarios = await store.listar("usuarios");
   const u = usuarios.find((x) => x.nombre.trim().toLowerCase() === nombre.trim().toLowerCase() && x.estado !== "inactivo");
@@ -98,6 +99,11 @@ export async function iniciarSesion(nombre: string, pin: string): Promise<Sesion
   if (u.intentosFallidos || u.bloqueadoHasta) {
     await store.actualizar("usuarios", (x) => x.id === u.id, { intentosFallidos: 0, bloqueadoHasta: "" });
   }
+  return u;
+}
+
+export async function iniciarSesion(nombre: string, pin: string): Promise<Sesion> {
+  const u = await verificarCredenciales(nombre, pin);
   const sesion = { uid: u.id, nombre: u.nombre, rol: (u.rol === "admin" ? "admin" : "usuario") as Sesion["rol"] };
   (await cookies()).set(COOKIE, crearToken(sesion), {
     httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: DURACION_S,

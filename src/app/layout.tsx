@@ -10,11 +10,11 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, title: config.negocio, statusBarStyle: "default" },
 };
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#07090d", colorScheme: "dark" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es" style={{ colorScheme: "dark" }}>
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );

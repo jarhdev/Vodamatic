@@ -1,73 +1,33 @@
 @import "tailwindcss";
 
+/* Vodamatic: tema oscuro con grises, blancos, negros, azul y turquesa tech. */
 :root {
-  --bg: #f6f6f4;
-  --surface: #ffffff;
-  --surface-2: #f0f0ed;
-  --border: #e3e2dc;
-  --text: #1c1c1a;
-  --text-2: #5c5b55;
-  --text-3: #8a8981;
-  --accent: #1f6f5c;
-  --accent-ink: #ffffff;
-  --accent-soft: #e2f1ec;
-  --danger: #c23b3b;
-  --danger-soft: #fbe9e9;
-  --warn: #9a6500;
-  --warn-soft: #fdf2dc;
-  --ok: #1f7a3a;
-  --ok-soft: #e4f4e8;
-  --series-1: #2a78d6;
-  --series-2: #eb6834;
-  --grid: #e8e7e1;
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #121211;
-    --surface: #1a1a19;
-    --surface-2: #232321;
-    --border: #2f2f2c;
-    --text: #f3f2ee;
-    --text-2: #c3c2b7;
-    --text-3: #8f8e86;
-    --accent: #3fae90;
-    --accent-ink: #0d1f1a;
-    --accent-soft: #173229;
-    --danger: #ef7070;
-    --danger-soft: #3a1c1c;
-    --warn: #e0a640;
-    --warn-soft: #3a2c12;
-    --ok: #5cc27a;
-    --ok-soft: #173020;
-    --series-1: #3987e5;
-    --series-2: #d95926;
-    --grid: #2a2a27;
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #121211;
-  --surface: #1a1a19;
-  --surface-2: #232321;
-  --border: #2f2f2c;
-  --text: #f3f2ee;
-  --text-2: #c3c2b7;
-  --text-3: #8f8e86;
-  --accent: #3fae90;
-  --accent-ink: #0d1f1a;
-  --accent-soft: #173229;
-  --danger: #ef7070;
-  --danger-soft: #3a1c1c;
-  --warn: #e0a640;
-  --warn-soft: #3a2c12;
-  --ok: #5cc27a;
-  --ok-soft: #173020;
-  --series-1: #3987e5;
-  --series-2: #d95926;
-  --grid: #2a2a27;
+  --bg: #07090d;
+  --surface: #0f141b;
+  --surface-2: #161d27;
+  --surface-3: #1d2633;
+  --border: #222c39;
+  --border-strong: #2f3b4c;
+  --text: #f1f5f9;
+  --text-2: #a9b4c3;
+  --text-3: #6c7889;
+  --blue: #3b82f6;
+  --blue-soft: rgba(59, 130, 246, 0.14);
+  --turq: #2dd4bf;
+  --turq-soft: rgba(45, 212, 191, 0.12);
+  --accent: var(--turq);
+  --accent-ink: #03141a;
+  --gradient: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.13);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.13);
+  --ok: #34d399;
+  --ok-soft: rgba(52, 211, 153, 0.12);
+  /* Series de gráficos (validadas para daltonismo sobre --surface) */
+  --series-1: #10a89a;
+  --series-2: #3b82f6;
+  --grid: #1c2430;
   color-scheme: dark;
 }
 
@@ -75,13 +35,19 @@
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-borde: var(--border);
+  --color-borde-fuerte: var(--border-strong);
   --color-tinta: var(--text);
   --color-tinta-2: var(--text-2);
   --color-tinta-3: var(--text-3);
+  --color-azul: var(--blue);
+  --color-azul-suave: var(--blue-soft);
+  --color-turquesa: var(--turq);
+  --color-turquesa-suave: var(--turq-soft);
   --color-acento: var(--accent);
   --color-acento-tinta: var(--accent-ink);
-  --color-acento-suave: var(--accent-soft);
+  --color-acento-suave: var(--turq-soft);
   --color-peligro: var(--danger);
   --color-peligro-suave: var(--danger-soft);
   --color-aviso: var(--warn);
@@ -92,7 +58,11 @@
 }
 
 body {
-  background: var(--bg);
+  background:
+    radial-gradient(1200px 500px at 85% -10%, rgba(59, 130, 246, 0.12), transparent 60%),
+    radial-gradient(900px 400px at -10% 10%, rgba(45, 212, 191, 0.08), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-sans);
   -webkit-tap-highlight-color: transparent;
@@ -102,6 +72,33 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+.degradado {
+  background: var(--gradient);
+}
+
+.texto-degradado {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Borde con degradado azul→turquesa para tarjetas destacadas */
+.borde-degradado {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(45, 212, 191, 0.6)) border-box;
+}
+
 input, select, textarea {
   font-size: 16px; /* evita el zoom automático en iPhone */
 }
+
+select option {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }

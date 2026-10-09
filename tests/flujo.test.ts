@@ -38,7 +38,6 @@ describe("ventas e inventario", () => {
     const stock = await stockActual();
     expect(stock.find((l) => l.producto.id === "cachito")?.stock).toBe(7);
     expect(store.datos.detalleVentas).toHaveLength(2);
-    expect(store.pestañas.get("Stock")?.[1]).toContain(7);
   });
 
   it("no duplica una venta reenviada con el mismo requestId", async () => {

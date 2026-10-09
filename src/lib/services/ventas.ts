@@ -4,7 +4,7 @@ import { nuevoId } from "../ids";
 import { equivalentes, redondear } from "../dinero";
 import { getStore, type DetalleVenta, type Movimiento, type Venta } from "../store";
 import { tasaNegocio } from "./tasas";
-import { recalcularPestañas } from "./calculadas";
+import { avisarStockBajo } from "./alertas";
 
 export const VentaInput = z.object({
   items: z
@@ -92,7 +92,7 @@ export async function registrarVenta(entrada: VentaInput, usuario: string): Prom
   await store.agregar("ventas", [venta]);
   await store.agregar("detalleVentas", detalle);
   await store.agregar("movimientos", movimientos);
-  await recalcularPestañas();
+  await avisarStockBajo(movimientos).catch((e) => console.error("Aviso de stock", e));
   return venta;
 }
 
@@ -121,7 +121,6 @@ export async function registrarCobro(ventaId: string, entrada: z.input<typeof Co
     metodo: c.metodo, banco: c.banco, referencia: c.referencia, fechaPago: hoy(),
     linkCapture: c.linkCapture || venta.linkCapture,
   });
-  await recalcularPestañas();
 }
 
 /** Anula (no borra) la venta, su detalle y devuelve el inventario. */
@@ -132,5 +131,4 @@ export async function anularVenta(ventaId: string, usuario: string) {
   if (!n) throw new Error("Venta no encontrada o ya anulada");
   await store.actualizar("detalleVentas", (d) => d.ventaId === ventaId, { anulado: marca });
   await store.actualizar("movimientos", (m) => m.referencia === ventaId, { anulado: marca });
-  await recalcularPestañas();
 }

@@ -20,11 +20,11 @@ export default async function Ventas() {
   return (
     <div className="space-y-4">
       <Titulo sub={t ? undefined : "⚠ No hay tasa del día. Cárgala tocando el botón de tasa arriba."}>Nueva venta</Titulo>
-      <Tarjeta>
+      <Tarjeta destacada>
         {t ? <NuevaVenta productos={vendibles} tasa={t.valor} lectorActivo={lectorDisponible()} /> : <Vacio>Carga la tasa para poder vender.</Vacio>}
       </Tarjeta>
 
-      <Tarjeta titulo="Ventas recientes">
+      <Tarjeta titulo="Ventas recientes" icono="ventas">
         {recientes.length === 0 ? <Vacio>Aún no hay ventas</Vacio> : (
           <ul className="divide-y divide-borde">
             {recientes.map((v) => (

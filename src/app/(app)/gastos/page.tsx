@@ -21,13 +21,13 @@ export default async function Gastos() {
   return (
     <div className="space-y-4">
       <Titulo sub="Toma foto a la factura y la app llena el gasto y suma la mercancía al inventario.">Nuevo gasto</Titulo>
-      <Tarjeta>
+      <Tarjeta destacada>
         {t ? (
           <NuevoGasto productos={productos.filter((p) => p.activo !== "no")} categorias={config.plantilla.categoriasGasto} tasa={t.valor} lectorActivo={lectorDisponible()} />
         ) : <Vacio>Carga la tasa del día para registrar gastos.</Vacio>}
       </Tarjeta>
 
-      <Tarjeta titulo="Gastos de este mes" accion={<span className="num text-sm font-medium">{formatoUsd(totalMes)}</span>}>
+      <Tarjeta titulo="Gastos de este mes" icono="gastos" accion={<span className="num text-sm font-medium">{formatoUsd(totalMes)}</span>}>
         {delMes.length === 0 ? <Vacio>Sin gastos este mes</Vacio> : (
           <ul className="divide-y divide-borde">
             {delMes.map((g) => (

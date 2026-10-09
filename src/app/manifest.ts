@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: config.negocio.slice(0, 12),
     start_url: "/",
     display: "standalone",
-    background_color: "#f6f6f4",
-    theme_color: "#1f6f5c",
+    background_color: "#07090d",
+    theme_color: "#07090d",
     icons: [{ src: "/icon.svg", sizes: "any", type: "image/svg+xml" }],
   };
 }

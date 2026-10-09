@@ -8,6 +8,7 @@
  */
 import { SheetsStore } from "../src/lib/store/sheets";
 import { PESTAÑAS_CALCULADAS } from "../src/lib/store/esquema";
+import { formulasResumen, formulasStock } from "../src/lib/store/formulas";
 import { hashPin, nuevaSal } from "../src/lib/pin";
 import { hoy } from "../src/lib/fechas";
 import { datosDemo } from "../src/lib/store/demo";
@@ -25,6 +26,9 @@ async function main() {
   const store = new SheetsStore(GOOGLE_SHEET_ID, GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY);
   const creadas = await store.prepararHoja(Object.values(PESTAÑAS_CALCULADAS));
   console.log(creadas.length ? `Pestañas creadas: ${creadas.join(", ")}` : "Todas las pestañas ya existían");
+  await store.escribirFormulas(PESTAÑAS_CALCULADAS.resumen, formulasResumen());
+  await store.escribirFormulas(PESTAÑAS_CALCULADAS.stock, formulasStock());
+  console.log("Fórmulas de Resumen y Stock listas");
 
   const admin = arg("admin");
   const pin = arg("pin");
@@ -37,7 +41,7 @@ async function main() {
       const sal = nuevaSal();
       await store.agregar("usuarios", [{
         id: `u${usuarios.length + 1}`, nombre: admin, rol: "admin", pinHash: hashPin(pin, sal), pinSal: sal,
-        estado: "activo", intentosFallidos: 0, bloqueadoHasta: "", creado: hoy(),
+        estado: "activo", intentosFallidos: 0, bloqueadoHasta: "", creado: hoy(), telegramId: "",
       }]);
       console.log(`Usuario administrador creado: ${admin}`);
     }
@@ -47,7 +51,7 @@ async function main() {
     const actuales = await store.listar("productos");
     if (actuales.length) console.log("Ya hay productos; no se cargan los de ejemplo");
     else {
-      await store.agregar("productos", datosDemo().productos);
+      await store.agregar("productos", datosDemo((process.env.NEGOCIO_RUBRO as Parameters<typeof datosDemo>[0]) ?? "cafeteria").productos);
       console.log("Productos de ejemplo cargados");
     }
   }

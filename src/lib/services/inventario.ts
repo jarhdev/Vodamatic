@@ -2,7 +2,6 @@ import { hoy, horaActual } from "../fechas";
 import { nuevoId } from "../ids";
 import { redondear } from "../dinero";
 import { getStore, type Movimiento, type Producto } from "../store";
-import { recalcularPestañas } from "./calculadas";
 
 export interface LineaStock {
   producto: Producto;
@@ -66,6 +65,5 @@ export async function registrarMovimiento(m: MovimientoManual, usuario: string) 
   if (m.tipo === "entrada" && m.costoUnitUsd && m.costoUnitUsd > 0) {
     await store.actualizar("productos", (x) => x.id === p.id, { costoUsd: redondear(m.costoUnitUsd, 4) });
   }
-  await recalcularPestañas();
   return mov;
 }

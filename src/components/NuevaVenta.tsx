@@ -101,7 +101,7 @@ export function NuevaVenta({ productos, tasa, lectorActivo }: { productos: Produ
         <div className="mt-2 grid max-h-64 grid-cols-2 gap-2 overflow-y-auto sm:grid-cols-3">
           {visibles.map((p) => (
             <button key={p.id} type="button" onClick={() => agregar(p)}
-              className="rounded-xl border border-borde bg-surface p-2.5 text-left transition hover:border-acento active:scale-[0.98]">
+              className="rounded-xl border border-borde bg-surface-2 p-2.5 text-left transition hover:border-turquesa/70 hover:bg-surface-3 active:scale-[0.98]">
               <div className="truncate text-sm font-medium">{p.nombre}</div>
               <div className="num text-xs text-tinta-2">{formatoUsd(p.precioUsd)} · {formatoBs(p.precioUsd * tasa)}</div>
             </button>
@@ -131,10 +131,10 @@ export function NuevaVenta({ productos, tasa, lectorActivo }: { productos: Produ
               <span className="num w-20 text-right text-sm font-medium">{formatoUsd(l.cantidad * l.precioUsd)}</span>
             </li>
           ))}
-          <li className="flex items-baseline justify-between bg-surface-2 px-3 py-2.5">
+          <li className="flex items-baseline justify-between bg-turquesa-suave px-3 py-2.5">
             <span className="text-sm font-medium">Total</span>
             <span className="text-right">
-              <span className="num block text-lg font-semibold">{formatoUsd(totalUsd)}</span>
+              <span className="num block text-xl font-semibold text-turquesa">{formatoUsd(totalUsd)}</span>
               <span className="num block text-xs text-tinta-2">{formatoBs(totalUsd * tasa)}</span>
             </span>
           </li>

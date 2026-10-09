@@ -101,9 +101,10 @@ export class SheetsStore implements Store {
     return data.length;
   }
 
-  async escribirPestaña(pestaña: string, filas: Celda[][]): Promise<void> {
+  /** Escribe fórmulas (USER_ENTERED) desde A1. Lo usa el setup para las pestañas calculadas. */
+  async escribirFormulas(pestaña: string, filas: (Celda | null)[][]): Promise<void> {
     await this.llamar(`/values/${rango(pestaña)}:clear`, { method: "POST", body: "{}" });
-    await this.llamar(`/values/${rango(pestaña, "A1")}?valueInputOption=RAW`, { method: "PUT", body: JSON.stringify({ values: filas }) });
+    await this.llamar(`/values/${rango(pestaña, "A1")}?valueInputOption=USER_ENTERED`, { method: "PUT", body: JSON.stringify({ values: filas }) });
   }
 
   /** Crea las pestañas que falten y escribe los encabezados. Lo usa scripts/setup-sheet.ts. */
@@ -111,6 +112,11 @@ export class SheetsStore implements Store {
     const meta = await this.llamar(`?fields=sheets.properties.title`);
     const existentes = new Set<string>((meta.sheets ?? []).map((s: { properties: { title: string } }) => s.properties.title));
     const creadas: string[] = [];
+    // Hora de Venezuela para que TODAY() en las fórmulas cuadre con las fechas de la app.
+    await this.llamar(`:batchUpdate`, {
+      method: "POST",
+      body: JSON.stringify({ requests: [{ updateSpreadsheetProperties: { properties: { timeZone: "America/Caracas" }, fields: "timeZone" } }] }),
+    });
     const requeridas = [...pestañasCalculadas, ...Object.values(TABLAS).map((t) => t.pestaña)];
     const faltan = requeridas.filter((p) => !existentes.has(p));
     if (faltan.length) {

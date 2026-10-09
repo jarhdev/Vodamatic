@@ -9,26 +9,13 @@ import type { FacturaLeida } from "@/lib/ai/lector";
 import { Campo, claseBoton, claseInput } from "./ui";
 import { LectorArchivo } from "./LectorArchivo";
 import { enviar, idSolicitud, num } from "./cliente";
+import { sugerirProducto } from "@/lib/emparejar";
 
 interface Item {
   productoId: string;
   descripcion: string;
   cantidad: string;
   costoUnit: string;
-}
-
-const normal = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-
-/** Busca el producto del inventario que más palabras comparte con el renglón de la factura. */
-export function sugerirProducto(descripcion: string, productos: Producto[]): string {
-  const palabras = normal(descripcion).split(/[^a-z0-9]+/).filter((w) => w.length > 2);
-  let mejor = { id: "", puntos: 0 };
-  for (const p of productos) {
-    const nombre = normal(p.nombre);
-    const puntos = palabras.filter((w) => nombre.includes(w)).length;
-    if (puntos > mejor.puntos) mejor = { id: p.id, puntos };
-  }
-  return mejor.puntos > 0 ? mejor.id : "";
 }
 
 export function NuevoGasto({ productos, categorias, tasa, lectorActivo }: { productos: Producto[]; categorias: string[]; tasa: number; lectorActivo: boolean }) {

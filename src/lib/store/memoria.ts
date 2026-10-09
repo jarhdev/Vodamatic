@@ -1,15 +1,14 @@
-import type { Celda, Filas, Store, Tabla } from "./esquema";
+import type { Filas, Store, Tabla } from "./esquema";
 
 type Datos = { [K in Tabla]: Filas[K][] };
 
 /** Store en memoria para el modo demo y los tests. Se reinicia al reiniciar el servidor. */
 export class MemoriaStore implements Store {
   datos: Datos;
-  pestañas = new Map<string, Celda[][]>();
 
   constructor(inicial: Partial<Datos> = {}) {
     this.datos = {
-      productos: [], ventas: [], detalleVentas: [], gastos: [], detalleGastos: [], movimientos: [], tasas: [], usuarios: [],
+      productos: [], ventas: [], detalleVentas: [], gastos: [], detalleGastos: [], movimientos: [], tasas: [], usuarios: [], pendientes: [],
       ...structuredClone(inicial),
     } as Datos;
   }
@@ -33,7 +32,4 @@ export class MemoriaStore implements Store {
     return n;
   }
 
-  async escribirPestaña(pestaña: string, filas: Celda[][]): Promise<void> {
-    this.pestañas.set(pestaña, filas);
-  }
 }

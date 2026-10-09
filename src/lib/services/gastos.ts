@@ -4,7 +4,6 @@ import { nuevoId } from "../ids";
 import { equivalentes, redondear } from "../dinero";
 import { getStore, type DetalleGasto, type Gasto, type Movimiento } from "../store";
 import { tasaNegocio } from "./tasas";
-import { recalcularPestañas } from "./calculadas";
 
 export const GastoInput = z.object({
   concepto: z.string().min(1, "Falta el concepto"),
@@ -82,7 +81,6 @@ export async function registrarGasto(entrada: GastoInput, usuario: string): Prom
   for (const e of entradas) {
     if (e.costoUnitUsd > 0) await store.actualizar("productos", (p) => p.id === e.productoId, { costoUsd: e.costoUnitUsd });
   }
-  await recalcularPestañas();
   return gasto;
 }
 
@@ -93,5 +91,4 @@ export async function anularGasto(gastoId: string, usuario: string) {
   if (!n) throw new Error("Gasto no encontrado o ya anulado");
   await store.actualizar("detalleGastos", (d) => d.gastoId === gastoId, { anulado: marca });
   await store.actualizar("movimientos", (m) => m.referencia === gastoId, { anulado: marca });
-  await recalcularPestañas();
 }
